@@ -40,9 +40,7 @@ class Perceptron(object):
 
     def predict(self, X):
         X = np.asarray(X)
-        y_pred = X @ self.W + self.b
-        y_pred[y_pred > 0] = +1
-        y_pred[y_pred < 0] = -1
+        y_pred = np.sign(X @ self.W + self.b)
         return y_pred
 
     def loss(self, X, y):
