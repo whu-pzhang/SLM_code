@@ -44,14 +44,10 @@ class Perceptron(object):
         return y_pred
 
 
-class DualPerceptron(object):
+class DualPerceptron(Perceptron):
     """
     Dual form of Perceptron
     """
-
-    def __init__(self):
-        self.alpha = None
-        self.b = None
 
     def train(self, X, y, learning_rate=1., verbose=False):
         """
@@ -62,20 +58,29 @@ class DualPerceptron(object):
         y = np.asarray(y).reshape(N, 1)
         assert N == y.shape[0], 'labels not match!'
         # init
-        self.alpha = np.zeros((N, 1), dtype=X.dtype)
+        alpha = np.zeros((N, 1), dtype=X.dtype)
         self.b = 0
-
+        # Gram matrix
         gram_matrix = X @ X.T
 
         while True:
             index = np.random.choice(N, 1)
-            y_pred = alpha @ y * gram_matrix[:, index] + self.b
-            if y[index] * y_pred <= 0:
-                self.alpha[index] += learning_rate
+            score = (alpha * y).T @ (gram_matrix[:, index]) + self.b
+            if y[index] * score <= 0:
+                if verbose:
+                    print("alpha: {}, b: {}".format(
+                        np.squeeze(alpha), np.squeeze(self.b)), end=';  ')
+                    print("Misclassify:", X[index])
+                alpha[index] += learning_rate
                 self.b += learning_rate * y[index]
 
-    def predict(self, X):
-        pass
+            self.W = X.T @ (alpha * y)
+            y_pred = self.predict(X)
+            if np.allclose(y_pred, y):
+                if verbose:
+                    print("W: {}, b: {}".format(
+                        np.squeeze(self.W), np.squeeze(self.b)))
+                break
 
 
 if __name__ == '__main__':
@@ -86,5 +91,8 @@ if __name__ == '__main__':
     ], dtype=np.float32)
     y = np.array([1, 1, -1], dtype=np.float32)
 
-    model = Perceptron()
-    model.train(X, y, verbose=True)
+    model1 = Perceptron()
+    model1.train(X, y, verbose=True)
+
+    model2 = DualPerceptron()
+    model2.train(X, y, verbose=True)
