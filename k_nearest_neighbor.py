@@ -68,3 +68,11 @@ class kNearestNeighbor(object):
             index = np.argsort(dists[i])[:k]
             closest_y = self.y_train[index]
             y_pred[i] = np.argmax(np.bincount(closest_y))
+
+
+class KDTree(object):
+    pass
+
+
+if __name__ == "__main__":
+    pass
