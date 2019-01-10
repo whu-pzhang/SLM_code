@@ -30,7 +30,7 @@ class kNearestNeighbor(object):
         Returns:
         - y_pred:
         """
-        dists = compute_distance(X)
+        dists = self.compute_distance(X)
         return self.predict_labels(dists, k=k)
 
     def compute_distance(self, X):
@@ -67,7 +67,9 @@ class kNearestNeighbor(object):
         for i in range(num_test):
             index = np.argsort(dists[i])[:k]
             closest_y = self.y_train[index]
-            y_pred[i] = np.argmax(np.bincount(closest_y))
+            y_pred[i] = np.argmax(np.bincount(closest_y.astype('int')))
+
+        return y_pred
 
 
 class KDTree(object):
