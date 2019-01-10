@@ -12,7 +12,7 @@ class Perceptron(object):
         self.W = None
         self.b = None
 
-    def train(self, X, y, learning_rate=1, verbose=False):
+    def train(self, X, y, learning_rate=1e-4, verbose=False):
         X = np.asarray(X)
         N, D = X.shape
         y = np.asarray(y).reshape(N, 1)
@@ -43,10 +43,14 @@ class Perceptron(object):
         y_pred = np.sign(X @ self.W + self.b)
         return y_pred
 
+    def loss(self, X, y):
+        pass
+
 
 class DualPerceptron(Perceptron):
     """
-    Dual form of Perceptron
+    Dual form of Perceptron.
+    This class is inheritted from class Perceptron
     """
 
     def train(self, X, y, learning_rate=1., verbose=False):
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     y = np.array([1, 1, -1], dtype=np.float32)
 
     model1 = Perceptron()
-    model1.train(X, y, verbose=True)
+    model1.train(X, y, lr=1, verbose=True)
 
     model2 = DualPerceptron()
-    model2.train(X, y, verbose=True)
+    model2.train(X, y, lr=1, verbose=True)
